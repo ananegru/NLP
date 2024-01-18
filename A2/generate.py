@@ -43,6 +43,7 @@ start_word: only used in the bigram model, the word it starts generating from. I
 def GENERATE(word_index_dict, probs, model_type, max_words, start_word):
     returnSTR = ""
     index_word_dict = {v: k for k, v in word_index_dict.items()}
+    # print(index_word_dict)
     num_words = 0
 
     #been passed a list of probabilities
@@ -52,12 +53,14 @@ def GENERATE(word_index_dict, probs, model_type, max_words, start_word):
         while(True):
             wordIndex = np.random.choice(len(word_index_dict), 1, p=list(probs))
             word = index_word_dict[wordIndex[0]]
-            returnSTR += word + " "
-            num_words +=1
+            if word != "<s>":  # Skip <s> if randomly selected
+                returnSTR += word + " "
+                num_words +=1
             if word == "</s>" or num_words == max_words:
                 break
 
         return returnSTR
+  
 
     #been passed a matrix of probabilities, where each row is the previous word. 
     if model_type == "bigram":
@@ -66,13 +69,18 @@ def GENERATE(word_index_dict, probs, model_type, max_words, start_word):
         while(True):
             wordIndex = np.random.choice(len(word_index_dict), 1, p=list(probs[word_index_dict[prevWord]]))
             word = index_word_dict[wordIndex[0]]
-            returnSTR += word + " "
-            num_words +=1
-            prevWord = word
+            if word != "<s>":  # Skip <s> if randomly selected
+                returnSTR += word + " "
+                num_words +=1
+                prevWord = word
             if word == "</s>" or num_words == max_words:
                 break
 
         return returnSTR
+
+
+
+
 
 
 
